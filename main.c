@@ -75,13 +75,13 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         case WM_COMMAND:
             switch (LOWORD(wParam)) {
                 case IDM_INSTALL:
-                    InstallToProgramFiles();
+                    InstallToProgramFiles("ShowDesktopApp", "DesktopHelper", "ShowDesktop.exe", "Minimize All.lnk", "Show Desktop");
                     break;
                 case IDM_ADD_STARTUP:
-                    AddToStartup();
+                    AddToStartup("ShowDesktopApp");
                     break;
                 case IDM_REM_STARTUP:
-                    RemoveFromStartup();
+                    RemoveFromStartup("ShowDesktopApp");
                     break;
                 case IDM_EXIT:
                     DestroyWindow(hwnd);

@@ -5,25 +5,25 @@
 #include <shlobj.h>
 #include <objbase.h>
 
-void AddToStartup() {
+void AddToStartup(const char* appName) {
     HKEY hKey;
     char path[MAX_PATH];
     GetModuleFileNameA(NULL, path, MAX_PATH);
     if (RegOpenKeyExA(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_SET_VALUE, &hKey) == ERROR_SUCCESS) {
-        RegSetValueExA(hKey, "ShowDesktopApp", 0, REG_SZ, (unsigned char*)path, strlen(path) + 1);
+        RegSetValueExA(hKey, appName, 0, REG_SZ, (unsigned char*)path, strlen(path) + 1);
         RegCloseKey(hKey);
     }
 }
 
-void RemoveFromStartup() {
+void RemoveFromStartup(const char* appName) {
     HKEY hKey;
     if (RegOpenKeyExA(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_SET_VALUE, &hKey) == ERROR_SUCCESS) {
-        RegDeleteValueA(hKey, "ShowDesktopApp");
+        RegDeleteValueA(hKey, appName);
         RegCloseKey(hKey);
     }
 }
 
-void InstallToProgramFiles() {
+void InstallToProgramFiles(const char* appName, const char* subDir, const char* exeName, const char* shortcutName, const char* shortcutDesc) {
     char currentPath[MAX_PATH];
     char programFiles[MAX_PATH];
     char targetDir[MAX_PATH];
@@ -37,9 +37,9 @@ void InstallToProgramFiles() {
         return;
     }
 
-    wsprintfA(targetDir, "%s\\DesktopHelper", programFiles);
+    wsprintfA(targetDir, "%s\\%s", programFiles, subDir);
     CreateDirectoryA(targetDir, NULL);
-    wsprintfA(targetPath, "%s\\ShowDesktop.exe", targetDir);
+    wsprintfA(targetPath, "%s\\%s", targetDir, exeName);
 
     if (!CopyFileA(currentPath, targetPath, FALSE)) {
         MessageBoxA(NULL, "Failed to copy executable to Program Files.", "Error", MB_OK | MB_ICONERROR);
@@ -48,20 +48,20 @@ void InstallToProgramFiles() {
 
     HKEY hKey;
     if (RegOpenKeyExA(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_SET_VALUE, &hKey) == ERROR_SUCCESS) {
-        RegSetValueExA(hKey, "ShowDesktopApp", 0, REG_SZ, (unsigned char*)targetPath, strlen(targetPath) + 1);
+        RegSetValueExA(hKey, appName, 0, REG_SZ, (unsigned char*)targetPath, strlen(targetPath) + 1);
         RegCloseKey(hKey);
     }
 
     if (SHGetSpecialFolderPathA(NULL, startMenuPath, CSIDL_COMMON_PROGRAMS, FALSE)) {
-        wsprintfA(shortcutFolder, "%s\\DesktopHelper", startMenuPath);
+        wsprintfA(shortcutFolder, "%s\\%s", startMenuPath, subDir);
         CreateDirectoryA(shortcutFolder, NULL);
-        wsprintfA(shortcutPath, "%s\\Minimize All.lnk", shortcutFolder);
+        wsprintfA(shortcutPath, "%s\\%s", shortcutFolder, shortcutName);
 
         CoInitialize(NULL);
         IShellLinkA* psl;
         if (SUCCEEDED(CoCreateInstance(&CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, &IID_IShellLinkA, (void**)&psl))) {
             psl->lpVtbl->SetPath(psl, targetPath);
-            psl->lpVtbl->SetDescription(psl, "Show Desktop");
+            psl->lpVtbl->SetDescription(psl, shortcutDesc);
             IPersistFile* ppf;
             if (SUCCEEDED(psl->lpVtbl->QueryInterface(psl, &IID_IPersistFile, (void**)&ppf))) {
                 WCHAR wsz[MAX_PATH];
