@@ -1,7 +1,7 @@
 CC = clang
 LIB = llvm-lib
 RC = windres
-LIBS = -luser32 -lshell32 -lole32
+LIBS = -luser32 -lshell32 -lole32 -mwindows
 
 OBJ_DIR = objs
 DIST_DIR = dist
