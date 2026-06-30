@@ -1,4 +1,7 @@
-`The following readme was generated via a locally hosted gemma e4b model.`
+Backstory, startallback x64 for windows 11's showdesktop feature is broken so I made this small utility.
+
+### **AI DISCLOSURE:** `The following readme was generated via a locally hosted gemma e4b model:`
+
 # Desktop Helper
 
 A lightweight Win32 system tray application designed to instantly minimize all visible windows via native keystroke injection and window enumeration. The project separates the application shell from its persistence and deployment routines, which are compiled into a distinct static library.
