@@ -51,3 +51,9 @@ make clean
 
 * **Keystroke Simulation:** Emulates `Win + M` via `SendInput` to leverage the OS layout dispatcher, followed by an explicit `EnumWindows` cycle using `ShowWindowAsync(hwnd, SW_FORCEMINIMIZE)` to force minimization on windows that reject the initial shell command.
 * **Modularity:** The deployment system (`installer.c`) is strictly separated from the runtime logic (`main.c`). It handles registry modifications (`Software\Microsoft\Windows\CurrentVersion\Run`) and COM interface initialization (`IShellLinkA`/`IPersistFile`) safely outside the application engine loop.
+
+
+
+-------------
+
+`app.ico` <a href="https://www.flaticon.com/free-icons/monitor" title="monitor icons">Hilmy Abiyyu A. - Flaticon</a>
